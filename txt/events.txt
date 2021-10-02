@@ -1,0 +1,19 @@
+"Date": "10/2016"
+"Title": "Start education at University of Science and Technology"
+"Description": ""
+
+"Date": "01/2020"
+"Title": "Engineer's degree at University of Science and Technology"
+"Description": ""
+
+"Date": "04/2020"
+"Title": "NOKIA - tester automative"
+"Description": ""
+
+"Date": "02/2021"
+"Title": "NOKIA - SCRUM Master"
+"Description": ""
+
+"Date": "07/2021"
+"Title": "Master's degree at University of Science and Technology"
+"Description": ""
