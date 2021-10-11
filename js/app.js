@@ -97,15 +97,21 @@ function setupDefaultTextFields() {
 
 
 
-function dragElement(elmnt) {
-    var pos1 = 0, pos3 = 0, max = window.innerWidth - 40;
+function dragElement(elmnt, max) {
+    var pos1 = 1000, pos3 = 0;
+    var moved = false;
+    var cardId = elmnt.id.split('_')[1];
   
-    var element = document.querySelector('.flexsection');
+    var card = document.querySelector('#card_' + cardId);
+    var card_content = document.querySelector('#card__content_' + cardId);
+
     elmnt.onmousedown = dragMouseDown;
 
     function dragMouseDown(e) {
         e = e || window.event;
         e.preventDefault();
+
+        card.classList.remove('card--transition');
         // get the mouse cursor position at startup:
         pos3 = e.clientX;
         document.onmouseup = closeDragElement;
@@ -114,6 +120,11 @@ function dragElement(elmnt) {
     }
 
     function elementDrag(e) {
+        max = window.innerWidth;
+        moved = true;
+        elmnt.classList.add('card__sticker--active');
+        card_content.classList.add('card__content--active');
+        card.style.zIndex = '10';
         e = e || window.event;
         e.preventDefault();
         // calculate the new cursor position:
@@ -121,68 +132,118 @@ function dragElement(elmnt) {
         pos3 = e.clientX;
         // set the element's new position:
         if (pos3 > 0 && pos3 < max) {
-            element.style.left = (element.offsetLeft - pos1) + "px";
+            card.style.left = (card.offsetLeft - pos1) + "px";
         }
     }
 
     function closeDragElement() {
-        left = returnPosition(element.style.left);
-        if (left < max / 2) {
-            element.style.left = '70px';
+        left = returnPosition(card.style.left);
+        max = window.innerWidth;
+        if (left < (2 * max / 3)) {
+            openCard(cardId);
         } else {
-            element.style.left = '100vw';
+            closeCard(cardId);
         }
+
         // stop moving when mouse button is released:
         document.onmouseup = null;
         document.onmousemove = null;
     }
-
-    function returnPosition(position) {
-        var substring = position.substring(0, position.length - 2);
-        return substring
-    }
 }
+
+function openCard(cardId) {
+    var card = document.querySelector('#card_' + cardId);
+    var card_content = document.querySelector('#card__content_' + cardId);
+    var card_sticker = document.querySelector('#sticker_' + cardId);
+    var card_close = document.querySelector('#close_' + cardId);
+
+    card_close.classList.add('card__close--active');
+    card_content.classList.add('card__content--active');
+    card_sticker.classList.add('card__sticker--active');
+    card.classList.add('card--transition');
+    card.style.zIndex = '20';
+    card.style.left = '70px';
+    
+}
+
+function closeCard(cardId) {
+    var card = document.querySelector('#card_' + cardId);
+    var card_content = document.querySelector('#card__content_' + cardId);
+    var card_close = document.querySelector('#close_' + cardId);
+    var card_sticker = document.querySelector('#sticker_' + cardId);
+
+    card.style.zIndex = '2';
+    card.style.left = '100vw';
+    card_content.classList.remove('card__content--active');
+    card_sticker.classList.remove('card__sticker--active');
+    card_close.classList.remove('card__close--active');
+
+    card.classList.add('card--transition');
+    setTimeout(function() {
+        card.classList.remove('card--transition');
+    }, 300);
+}
+
+function returnPosition(position) {
+    var substring = position.substring(0, position.length - 2);
+    return substring;
+}
+
+function followCursorPosition(event) {
+    var cursor1 = document.querySelector('.cursor__one');
+    var cursor2 = document.querySelector('.cursor__two');
+
+    cursor1.style.display = "block";
+    cursor1.style.left = event.clientX + 'px';
+    cursor1.style.top = event.clientY + 'px';
+
+    cursor2.style.display = "block";
+    cursor2.style.left = event.clientX + 2 + 'px';
+    cursor2.style.top = event.clientY + 2 + 'px';
+
+}
+
+// function moveBackgroundImage(event) {
+//     var container = document.querySelector('.container');
+//     var currentX = container.style.backgroundPositionX;
+//     var currentY = container.style.backgroundPositionY;
+//     currentX = currentX.replace('px', '');
+//     container.style.backgroundPositionX = +currentX + +2 + 'px';
+//     console.log(container.style.backgroundPositionX);
+// }
 
 
 document.addEventListener('DOMContentLoaded', () => {
     makeTimeline();
     makeTimelineDescription();
     setupDefaultTextFields();
-    dragElement(document.querySelector('.sticker'));
+    window.addEventListener('mousemove', followCursorPosition);
+    //window.addEventListener('mousemove', moveBackgroundImage);
 
-    document.querySelectorAll('.sticker').forEach(function(item) {
-        item.addEventListener('dblclick', function() {
-            document.querySelector('.flexsection').style.left = "100vw";
+    document.querySelectorAll('.card__sticker').forEach(function(item) {
+        dragElement(item);       
+    });
+    document.querySelectorAll('.card__close').forEach(function(item) {
+        console.log();
+        item.addEventListener('click', function() {
+            var id = item.id.split('_')[1];
+            closeCard(id);
         });
-        
 
     });
-
-
-
-    // Scroll to top on click
-    document.querySelector('#more-arrows').onclick = () => {
-        window.scrollTo(0, 0);
-    };
-
-    //Show and hide scroll button
-    document.addEventListener("scroll", () => {
-        var y = window.scrollY;
-        const arrow_box = document.getElementsByClassName("arrowup");
-        if (y >= 600) {
-            arrow_box[0].classList.add("active--button");
-        } else {
-            arrow_box[0].classList.remove("active--button");
-        }
-    });
-
+    
     //Timeline event listener
     document.querySelectorAll('.timeline__point').forEach(function(item) {
         var id = item.id.split('_')[1];
 
         item.addEventListener("click", function() {
             var date = document.querySelector('.timeline__date');
-            date.innerHTML = makeDateString(timeline_dates[id]["date"]);
+            date.classList.add('timeline__date--out');
+            setTimeout(function() {
+                date.innerHTML = makeDateString(timeline_dates[id]["date"]);
+                date.classList.remove('timeline__date--out');
+            }, 200);
+            
 
             document.querySelectorAll('.timeline__point').forEach(function(item) {
                 item.classList.remove('timeline__point--active');
@@ -196,13 +257,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
         item.addEventListener("mouseenter", function() {
             var popup = document.querySelector('#popup_' + id);
-            //popup.style.opacity = "1";
             popup.classList.add('timeline__popupDate--active');
         });
 
         item.addEventListener("mouseleave", function() {
             var popup = document.querySelector('#popup_' + id);
-            //popup.style.opacity = "0";
             popup.classList.remove('timeline__popupDate--active');
         });
     });
@@ -216,81 +275,4 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
     });
-    observer_cv_buttons.observe(document.querySelector('.container__button--one'));
-    observer_cv_buttons.observe(document.querySelector('.container__button--two'));
-    observer_cv_buttons.observe(document.querySelector('.container__button--three'));
-
-    const observer_cv_content = new IntersectionObserver(entries => {
-        entries.forEach(entry => {
-            if (entry.isIntersecting) {
-                entry.target.classList.add('animation--left');
-                observer_cv_content.unobserve(entry.target);
-            }
-        });
-    });
-    observer_cv_content.observe(document.querySelector('.container__text--one'));
-    observer_cv_content.observe(document.querySelector('.container__text--two'));
-    observer_cv_content.observe(document.querySelector('.container__text--three'));
-
-    const text_one_study = document.querySelectorAll('.container__text--one.study')[0];
-    const text_two_study = document.querySelectorAll('.container__text--two.study')[0];
-    const text_three_study = document.querySelectorAll('.container__text--three.study')[0];
-    const text_one_experience = document.querySelectorAll('.container__text--one.experience')[0];
-    const text_two_experience = document.querySelectorAll('.container__text--two.experience')[0];
-    const text_three_experience = document.querySelectorAll('.container__text--three.experience')[0];
-    const text_one_technologies = document.querySelectorAll('.container__text--one.technologies')[0];
-    const text_two_technologies = document.querySelectorAll('.container__text--two.technologies')[0];
-    const text_three_technologies = document.querySelectorAll('.container__text--three.technologies')[0];
-    const button_one = document.querySelector('.container__button--one');
-    const button_two = document.querySelector('.container__button--two');
-    const button_three = document.querySelector('.container__button--three');
-
-    button_one.onclick = () => {
-        showObj(text_one_study);
-        showObj(text_two_study);
-        showObj(text_three_study);
-
-        hideObj(text_one_experience);
-        hideObj(text_two_experience);
-        hideObj(text_three_experience);
-        hideObj(text_one_technologies);
-        hideObj(text_two_technologies);
-        hideObj(text_three_technologies);
-    };
-
-    button_two.onclick = () => {
-        showObj(text_one_experience);
-        showObj(text_two_experience);
-        showObj(text_three_experience);
-
-        hideObj(text_one_study);
-        hideObj(text_two_study);
-        hideObj(text_three_study);
-        hideObj(text_one_technologies);
-        hideObj(text_two_technologies);
-        hideObj(text_three_technologies);
-    }
-
-    button_three.onclick = () => {
-        showObj(text_one_technologies);
-        showObj(text_two_technologies);
-        showObj(text_three_technologies);
-
-        hideObj(text_one_study);
-        hideObj(text_two_study);
-        hideObj(text_three_study);
-        hideObj(text_one_experience);
-        hideObj(text_two_experience);
-        hideObj(text_three_experience);
-    }
-
-
-    function showObj(obj) {
-        obj.classList.remove('fadeout');
-        obj.classList.add('fadein');
-    }
-    function hideObj(obj) {
-        obj.classList.remove('fadein');
-        obj.classList.add('fadeout');
-    };
 })
