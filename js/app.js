@@ -231,7 +231,26 @@ document.addEventListener('DOMContentLoaded', () => {
         });
 
     });
-    
+
+
+    document.querySelectorAll('.tile').forEach(function(item) {
+        var id = item.id;
+
+        item.addEventListener("mouseenter", ()=> {
+            document.querySelectorAll('.tile').forEach(function(tile) {
+                if (tile.id != id) {
+                    tile.classList.add('tile--blured');
+                }
+            });
+            item.classList.add('highlight');
+        });
+        item.addEventListener("mouseleave", ()=> {
+            item.classList.remove('highlight');
+            document.querySelectorAll('.tile').forEach(function(tile) {
+                tile.classList.remove('tile--blured');
+            });
+        });
+    });
     //Timeline event listener
     document.querySelectorAll('.timeline__point').forEach(function(item) {
         var id = item.id.split('_')[1];

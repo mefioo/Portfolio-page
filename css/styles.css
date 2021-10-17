@@ -592,21 +592,28 @@ a:hover {
   margin-bottom: 7%;
 }
 
-.rgb::after {
+.highlight::after {
   content: "";
-  background: linear-gradient(45deg, #ff6b61 0%, black 10%, #ff6b61 20%, black 30%, #ff6b61 40%, black 50%, #ff6b61 60%, black 70%, #ff6b61 80%, black 90%, #ff6b61 100%) repeat 0% 0%/300% 100%;
+  background: linear-gradient(45deg, #ff6b61 0%, darkgrey 10%, #ff6b61 20%, darkgrey 30%, #ff6b61 40%, darkgrey 50%, #ff6b61 60%, darkgrey 70%, #ff6b61 80%, darkgrey 90%, #ff6b61 100%) repeat 0% 0%/300% 100%;
   position: absolute;
-  inset: -5px;
+  inset: -10px;
   -webkit-filter: blur(8px);
           filter: blur(8px);
   -webkit-transform: translateZ(-10px);
           transform: translateZ(-10px);
   border-radius: 25px;
-  -webkit-animation: rgb 16s linear infinite;
-          animation: rgb 16s linear infinite;
+  -webkit-transition: opacity .5s ease-in-out;
+  transition: opacity .5s ease-in-out;
+  -webkit-animation: highlight 10s linear infinite;
+          animation: highlight 10s linear infinite;
+  opacity: 0;
 }
 
-@-webkit-keyframes rgb {
+.highlight:hover:after {
+  opacity: 1;
+}
+
+@-webkit-keyframes highlight {
   0% {
     background-position: 0% 50%;
   }
@@ -618,7 +625,7 @@ a:hover {
   }
 }
 
-@keyframes rgb {
+@keyframes highlight {
   0% {
     background-position: 0% 50%;
   }
@@ -633,39 +640,39 @@ a:hover {
 .tile {
   max-height: 20%;
   max-width: 25%;
-  background: grey;
-  color: white;
+  background: url("../img/notebook_page.png");
+  color: black;
   border-radius: 25px;
   margin: 0 auto;
   text-align: center;
+  line-height: 27.5px;
   -webkit-transform-style: preserve-3d;
           transform-style: preserve-3d;
-  -webkit-transform: perspective(1000px);
-          transform: perspective(1000px);
+}
+
+.tile--blured {
+  -webkit-filter: blur(5px);
+          filter: blur(5px);
+  -webkit-transition: -webkit-filter .1s ease-in-out;
+  transition: -webkit-filter .1s ease-in-out;
+  transition: filter .1s ease-in-out;
+  transition: filter .1s ease-in-out, -webkit-filter .1s ease-in-out;
 }
 
 .tile__photo {
-  padding-bottom: 5%;
-  max-width: 100%;
-  max-height: 25%;
+  padding: 10px;
+  width: 15em;
+  height: 12em;
   overflow: hidden;
-  background-color: grey;
-  border-radius: 25px;
-}
-
-.tile__photo--trimmed {
-  width: 100px;
-  height: 50%;
-  min-width: 100%;
-  max-width: 100%;
-  position: relative;
-  max-height: 50%;
-  border-radius: 25px 25px 0 0;
+  margin-bottom: 5%;
+  margin: 5% auto;
 }
 
 .tile__label {
   font-size: 25px;
   padding-bottom: 15%;
+  margin-left: 3em;
+  text-align: left;
 }
 
 .tile__description {
@@ -681,6 +688,23 @@ a:hover {
   padding-right: 3%;
   padding-bottom: 3%;
   border-radius: 25px;
+}
+
+.photo {
+  background-position: center;
+  background-size: cover;
+}
+
+.photo--food {
+  background-image: url("../img/hobbies/main/food.jpg");
+}
+
+.photo--trips {
+  background-image: url("../img/hobbies/main/trips.jpg");
+}
+
+.photo--calistenics {
+  background-image: url("../img/hobbies/main/calistenics.jpg");
 }
 
 .path {
