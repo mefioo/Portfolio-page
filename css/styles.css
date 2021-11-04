@@ -12,6 +12,7 @@ html {
 body {
   font-family: Architects Daughter;
   font-size: 20px;
+  overflow: hidden;
   cursor: none;
   -ms-overflow-style: none;
   /* IE and Edge */
@@ -26,16 +27,42 @@ body::-webkit-scrollbar {
 
 .cursor__one, .cursor__two {
   position: absolute;
+  font-size: 5px;
+  line-height: 2px;
   width: 12px;
   height: 12px;
-  background-color: blue;
-  border-radius: 6px;
+  color: black;
+  border-radius: 50%;
   z-index: 100;
   pointer-events: none;
   display: none;
+  text-align: center;
+  mix-blend-mode: difference;
+}
+
+.cursor__one {
+  -webkit-transition: -webkit-transform .3s ease-in-out;
+  transition: -webkit-transform .3s ease-in-out;
+  transition: transform .3s ease-in-out;
+  transition: transform .3s ease-in-out, -webkit-transform .3s ease-in-out;
+  background-color: white;
+}
+
+.cursor__one--click {
+  -webkit-transform: scale(4);
+          transform: scale(4);
+}
+
+.cursor__one p {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  -webkit-transform: translate(-50%, -50%);
+          transform: translate(-50%, -50%);
 }
 
 .cursor__two {
+  background-color: white;
   -webkit-transform: translate3d(0%, 0%, 0);
           transform: translate3d(0%, 0%, 0);
   -webkit-transition: 0.06s ease-in-out;
@@ -44,7 +71,7 @@ body::-webkit-scrollbar {
           transition-delay: 0;
   width: 8px;
   height: 8px;
-  border-radius: 4px;
+  border-radius: 50%;
 }
 
 a {
@@ -54,123 +81,6 @@ a {
 
 a:hover {
   color: black;
-}
-
-.sidebar {
-  height: auto;
-  position: fixed;
-  overflow-x: hidden;
-  z-index: 1;
-  right: -105px;
-  top: 30%;
-  background-color: black;
-  border-radius: 40px 0px 0px 40px;
-  -webkit-transition: right 0.2s ease-in;
-  transition: right 0.2s ease-in;
-}
-
-.sidebar:hover {
-  right: 0;
-}
-
-.sidebar__list {
-  text-align: center;
-  margin-left: 35px;
-}
-
-.sidebar__item {
-  margin-bottom: 40px;
-  margin-right: 20px;
-  list-style: none;
-}
-
-.sidebar__item:first-child {
-  margin-top: 40px;
-}
-
-.sidebar__item a {
-  font-size: 14px;
-  letter-spacing: 2px;
-  color: white;
-  -webkit-transition: border 0.5s ease-in;
-  transition: border 0.5s ease-in;
-}
-
-.sidebar__item a:after {
-  display: block;
-  content: '';
-  border-bottom: 1px solid lightgrey;
-  -webkit-transform: scaleX(0);
-          transform: scaleX(0);
-  -webkit-transition: -webkit-transform 0.5s ease-in-out;
-  transition: -webkit-transform 0.5s ease-in-out;
-  transition: transform 0.5s ease-in-out;
-  transition: transform 0.5s ease-in-out, -webkit-transform 0.5s ease-in-out;
-}
-
-.sidebar__item a:hover {
-  color: lightgrey;
-}
-
-.sidebar__item a:hover:after {
-  -webkit-transform: scaleX(1);
-          transform: scaleX(1);
-}
-
-.media {
-  margin-right: 400px;
-  margin-left: 400px;
-  display: -webkit-box;
-  display: -ms-flexbox;
-  display: flex;
-  position: fixed;
-  left: 0;
-  right: 0;
-  background-color: black;
-  border-radius: 0px 0px 70px 70px;
-  padding: 10px;
-  z-index: 100;
-  top: 0;
-}
-
-.media__list {
-  margin: 0 auto;
-}
-
-.media__item {
-  list-style: none;
-  display: inline;
-  margin-left: 100px;
-}
-
-.media__item:last-child {
-  margin-right: 100px;
-}
-
-.fab, .far {
-  font-size: 35px;
-  color: white;
-}
-
-.fab:after, .far:after {
-  display: block;
-  content: '';
-  border-bottom: 1px solid lightgrey;
-  -webkit-transform: scaleX(0);
-          transform: scaleX(0);
-  -webkit-transition: -webkit-transform 0.5s ease-in-out;
-  transition: -webkit-transform 0.5s ease-in-out;
-  transition: transform 0.5s ease-in-out;
-  transition: transform 0.5s ease-in-out, -webkit-transform 0.5s ease-in-out;
-}
-
-.fab:hover, .far:hover {
-  color: lightgray;
-}
-
-.fab:hover:after, .far:hover:after {
-  -webkit-transform: scaleX(1);
-          transform: scaleX(1);
 }
 
 .container {
@@ -383,11 +293,7 @@ a:hover {
   width: 100vw;
   height: 100vh;
   background-color: lightgrey;
-  border-bottom-left-radius: 50px;
-}
-
-.card__content--rounded {
-  border-top-left-radius: 50px;
+  overflow: hidden;
 }
 
 .card__content--active {
@@ -443,10 +349,10 @@ a:hover {
   color: #ff6b61;
   z-index: 100;
   position: absolute;
-  width: 100%;
   text-align: center;
   font-size: 30px;
-  top: 0px;
+  top: 10px;
+  left: 10px;
   opacity: 0;
   visibility: hidden;
   -webkit-transition: all 1.5s ease-in-out, color .3s ease-in-out;
@@ -479,20 +385,33 @@ a:hover {
 }
 
 .timeline__line {
+  z-index: 2;
   margin-top: 10vh;
   margin-left: 250px;
   margin-right: 250px;
   height: 6px;
   border-radius: 5px;
-  background-color: #ff6b61;
+  background-color: black;
   position: relative;
+}
+
+.timeline__pipeline {
+  color: lightgrey;
+  position: absolute;
+  z-index: 1;
+  padding-right: 10px;
+  margin-right: 100px;
+  top: -50px;
+  height: 100px;
+  border-right: dashed 2px black;
 }
 
 .timeline__point {
   position: absolute;
+  z-index: 2;
   width: 16px;
   height: 16px;
-  border: 3px solid #ff6b61;
+  border: 3px solid black;
   border-radius: 12px;
   top: -7px;
   background-color: black;
@@ -502,7 +421,7 @@ a:hover {
   content: '';
   width: 10px;
   height: 10px;
-  background: #ff6b61;
+  background: lightgrey;
   position: absolute;
   border-radius: 100%;
   top: 3px;
@@ -527,7 +446,7 @@ a:hover {
 .timeline__date {
   font-size: 40px;
   text-align: center;
-  color: #ff6b61;
+  color: white;
   -webkit-transition: all .2s ease-in-out;
   transition: all .2s ease-in-out;
   -webkit-transition-delay: 0.1s;
@@ -541,26 +460,36 @@ a:hover {
 }
 
 .timeline__popupDate {
+  color: lightgrey;
+  mix-blend-mode: difference;
   position: absolute;
   top: 50px;
   left: -40px;
   width: 150px;
   opacity: 0;
+  visibility: hidden;
   -webkit-transition: all 0.2s ease-in-out;
   transition: all 0.2s ease-in-out;
 }
 
 .timeline__popupDate--active {
   top: 30px;
+  visibility: visible;
   opacity: 1;
   -webkit-transition: all 0.2s ease-in-out;
   transition: all 0.2s ease-in-out;
 }
 
+.timeline__popupDate--active:hover {
+  opacity: 0;
+  visibility: hidden;
+  top: 50px;
+}
+
 .timeline__description {
   margin-top: 180px;
   position: relative;
-  color: #ff6b61;
+  color: black;
   -webkit-box-pack: center;
       -ms-flex-pack: center;
           justify-content: center;
@@ -592,138 +521,68 @@ a:hover {
   margin-bottom: 7%;
 }
 
-.highlight::after {
-  content: "";
-  background: linear-gradient(45deg, #ff6b61 0%, darkgrey 10%, #ff6b61 20%, darkgrey 30%, #ff6b61 40%, darkgrey 50%, #ff6b61 60%, darkgrey 70%, #ff6b61 80%, darkgrey 90%, #ff6b61 100%) repeat 0% 0%/300% 100%;
+.slideshow {
+  width: 100%;
+  height: 100%;
+}
+
+.slideshow__photo {
   position: absolute;
-  inset: -10px;
-  -webkit-filter: blur(8px);
-          filter: blur(8px);
-  -webkit-transform: translateZ(-10px);
-          transform: translateZ(-10px);
-  border-radius: 25px;
-  -webkit-transition: opacity .5s ease-in-out;
-  transition: opacity .5s ease-in-out;
-  -webkit-animation: highlight 10s linear infinite;
-          animation: highlight 10s linear infinite;
-  opacity: 0;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
 }
 
-.highlight:hover:after {
-  opacity: 1;
-}
-
-@-webkit-keyframes highlight {
-  0% {
-    background-position: 0% 50%;
-  }
-  50% {
-    background-position: 100% 50%;
-  }
-  100% {
-    background-position: 0% 50%;
-  }
-}
-
-@keyframes highlight {
-  0% {
-    background-position: 0% 50%;
-  }
-  50% {
-    background-position: 100% 50%;
-  }
-  100% {
-    background-position: 0% 50%;
-  }
-}
-
-.tile {
-  max-height: 20%;
-  max-width: 25%;
-  background: url("../img/notebook_page.png");
-  color: black;
-  border-radius: 25px;
-  margin: 0 auto;
-  text-align: center;
-  line-height: 27.5px;
-  -webkit-transform-style: preserve-3d;
-          transform-style: preserve-3d;
-}
-
-.tile--blured {
-  -webkit-filter: blur(5px);
-          filter: blur(5px);
-  -webkit-transition: -webkit-filter .1s ease-in-out;
-  transition: -webkit-filter .1s ease-in-out;
-  transition: filter .1s ease-in-out;
-  transition: filter .1s ease-in-out, -webkit-filter .1s ease-in-out;
-}
-
-.tile__photo {
-  padding: 10px;
-  width: 15em;
-  height: 12em;
-  overflow: hidden;
-  margin-bottom: 5%;
-  margin: 5% auto;
-}
-
-.tile__label {
-  font-size: 25px;
-  padding-bottom: 15%;
-  margin-left: 3em;
-  text-align: left;
-}
-
-.tile__description {
-  font-size: 17px;
-  -webkit-box-pack: center;
-      -ms-flex-pack: center;
-          justify-content: center;
-  -webkit-box-align: center;
-      -ms-flex-align: center;
-          align-items: center;
-  text-align: justify;
-  padding-left: 3%;
-  padding-right: 3%;
-  padding-bottom: 3%;
-  border-radius: 25px;
-}
-
-.photo {
-  background-position: center;
+.slideshow__photo--one {
+  background: url("../img/hobbies/calisthenics.jpg");
   background-size: cover;
 }
 
-.photo--food {
-  background-image: url("../img/hobbies/main/food.jpg");
+.slideshow__photo--two {
+  background: url("../img/hobbies/trips.jpg");
+  background-size: cover;
 }
 
-.photo--trips {
-  background-image: url("../img/hobbies/main/trips.jpg");
+.slideshow__photo--three {
+  background: url("../img/hobbies/food.jpg");
+  background-size: cover;
 }
 
-.photo--calistenics {
-  background-image: url("../img/hobbies/main/calistenics.jpg");
+.slideshow__dots {
+  position: absolute;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  width: 10%;
+  height: 3%;
+  bottom: 5%;
+  left: 50%;
+  -webkit-transform: translateX(-50%);
+          transform: translateX(-50%);
 }
 
-.path {
-  stroke-dasharray: 1000;
-  stroke-dashoffset: 1000;
-  -webkit-animation: line-anim 15s ease forwards;
-          animation: line-anim 15s ease forwards;
+.slideshow__dot {
+  margin: auto;
+  background: lightgrey;
+  border-radius: 50%;
+  width: 14px;
+  height: 14px;
 }
 
-@-webkit-keyframes line-anim {
-  to {
-    stroke-dashoffset: 0;
-  }
+#card__content_1 {
+  background: url("../img/timeline/notebook.jpg");
+  background-size: cover;
 }
 
-@keyframes line-anim {
-  to {
-    stroke-dashoffset: 0;
-  }
+#card__content_1::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(128, 116, 116, 0.5);
 }
 
 .event {
@@ -738,10 +597,13 @@ a:hover {
 .event__title {
   font-size: 40px;
   margin: 20px;
+  color: white;
 }
 
 .event__content {
   margin-top: 30px;
+  color: white;
+  mix-blend-mode: hard-light;
 }
 
 #cards_section {

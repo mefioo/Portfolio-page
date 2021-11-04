@@ -16,7 +16,7 @@ var timeline_dates = [  {date: "10/2016",
                         title: "Master's degree at University of Science and Technology",
                         description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce varius erat vitae dolor bibendum sollicitudin. Fusce vehicula purus justo, quis gravida nulla ultrices vel. Proin venenatis diam massa, non facilisis libero tempor sed. Suspendisse bibendum augue ac nisl ultricies dapibus. Curabitur cursus rhoncus turpis sed consectetur. Duis lorem metus, tristique ut viverra non, luctus et eros. Sed nec pretium magna, ut lobortis erat. Maecenas eleifend turpis dui, sit amet sodales risus sollicitudin non. In maximus sagittis tempor."}, 
                         {date: todayDate,
-                        title: "Ande we are here...",
+                        title: "And we are here...",
                         description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce varius erat vitae dolor bibendum sollicitudin. Fusce vehicula purus justo, quis gravida nulla ultrices vel. Proin venenatis diam massa, non facilisis libero tempor sed. Suspendisse bibendum augue ac nisl ultricies dapibus. Curabitur cursus rhoncus turpis sed consectetur. Duis lorem metus, tristique ut viverra non, luctus et eros. Sed nec pretium magna, ut lobortis erat. Maecenas eleifend turpis dui, sit amet sodales risus sollicitudin non. In maximus sagittis tempor."}]
 var months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]
 
@@ -49,6 +49,16 @@ function appendPointsToTimeline(width, number) {
     document.querySelector('#point_' + number).appendChild(popupDate);
 }
 
+function appendPipelineToTimeline(width, year) {
+    var pipeline = document.createElement("div");
+
+    pipeline.classList.add('timeline__pipeline');
+    pipeline.style.left = width - 3 + '%'
+    pipeline.innerHTML = year;
+
+    document.querySelector('.timeline__line').appendChild(pipeline);
+}
+
 function makeTimeline() {
     var firstDate = timeline_dates[0]["date"];
     var lastDate = timeline_dates[timeline_dates.length-1]["date"];
@@ -60,6 +70,16 @@ function makeTimeline() {
         var current = parseFloat(timeline_dates[i]["date"].split('/')[1]) * 12 + parseFloat(timeline_dates[i]["date"].split('/')[0]);
         var width = Math.round((current - firstMonths)*100/difference)
         appendPointsToTimeline(width, i);
+    }
+
+    var firstMonthSplit = timeline_dates[0]["date"].split('/');
+    var lastMonthSplit = timeline_dates[timeline_dates.length - 1]["date"].split('/');
+
+    var firstWidth = (12 - firstMonthSplit[0])*100/difference
+    appendPipelineToTimeline(firstWidth, firstMonthSplit[1]);
+    for (var year = parseInt(firstMonthSplit[1]) + 1; year < lastMonthSplit[1]; year++) {
+        width = 12 - firstMonthSplit[0] + (year - firstMonthSplit[1]) * 12;
+        appendPipelineToTimeline(width*100/difference, year);
     }
 
     document.querySelector('.timeline__point').classList.add('timeline__point--active');
@@ -95,8 +115,6 @@ function setupDefaultTextFields() {
     event.classList.add('active')
 }
 
-
-
 function dragElement(elmnt, max) {
     var pos1 = 1000, pos3 = 0;
     var moved = false;
@@ -112,10 +130,8 @@ function dragElement(elmnt, max) {
         e.preventDefault();
 
         card.classList.remove('card--transition');
-        // get the mouse cursor position at startup:
         pos3 = e.clientX;
         document.onmouseup = closeDragElement;
-        // call a function whenever the cursor moves:
         document.onmousemove = elementDrag;
     }
 
@@ -162,8 +178,7 @@ function openCard(cardId) {
     card_sticker.classList.add('card__sticker--active');
     card.classList.add('card--transition');
     card.style.zIndex = '20';
-    card.style.left = '70px';
-    
+    card.style.left = '0px'; 
 }
 
 function closeCard(cardId) {
@@ -200,31 +215,42 @@ function followCursorPosition(event) {
     cursor2.style.display = "block";
     cursor2.style.left = event.clientX + 2 + 'px';
     cursor2.style.top = event.clientY + 2 + 'px';
-
 }
 
-// function moveBackgroundImage(event) {
-//     var container = document.querySelector('.container');
-//     var currentX = container.style.backgroundPositionX;
-//     var currentY = container.style.backgroundPositionY;
-//     currentX = currentX.replace('px', '');
-//     container.style.backgroundPositionX = +currentX + +2 + 'px';
-//     console.log(container.style.backgroundPositionX);
-// }
+function addClickMeOnCursor() {
+    var cursor = document.querySelector('.cursor__one')
 
+    cursor.classList.add("cursor__one--click");
+
+    document.querySelector('.cursor__text').innerHTML = "click";
+    document.querySelector('.cursor__two').style.opacity = "0";
+}
+function removeClickMeOnCursor() {
+    var cursor = document.querySelector('.cursor__one');
+    cursor.classList.remove("cursor__one--click");
+    document.querySelector('.cursor__text').innerHTML = "";
+    document.querySelector('.cursor__two').style.opacity = "1";
+}
 
 document.addEventListener('DOMContentLoaded', () => {
+    window.addEventListener('mousemove', followCursorPosition);
+
     makeTimeline();
     makeTimelineDescription();
     setupDefaultTextFields();
-    window.addEventListener('mousemove', followCursorPosition);
-    //window.addEventListener('mousemove', moveBackgroundImage);
 
     document.querySelectorAll('.card__sticker').forEach(function(item) {
-        dragElement(item);       
+        dragElement(item);
+        item.addEventListener("mouseenter", function() {
+            var id = item.id.split('_')[1];
+            addClickMeOnCursor();
+        });
+        item.addEventListener("mouseleave", removeClickMeOnCursor);
     });
     document.querySelectorAll('.card__close').forEach(function(item) {
         console.log();
+        item.addEventListener('mouseenter', addClickMeOnCursor);
+        item.addEventListener('mouseleave', removeClickMeOnCursor);
         item.addEventListener('click', function() {
             var id = item.id.split('_')[1];
             closeCard(id);
@@ -232,13 +258,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
     });
 
-
     document.querySelectorAll('.tile').forEach(function(item) {
-        var id = item.id;
+        var id = item.id.split('_')[1];
+        var string_id = item.id;
 
         item.addEventListener("mouseenter", ()=> {
             document.querySelectorAll('.tile').forEach(function(tile) {
-                if (tile.id != id) {
+                if (tile.id != string_id) {
                     tile.classList.add('tile--blured');
                 }
             });
@@ -249,6 +275,9 @@ document.addEventListener('DOMContentLoaded', () => {
             document.querySelectorAll('.tile').forEach(function(tile) {
                 tile.classList.remove('tile--blured');
             });
+        });
+        item.addEventListener("click", function() {
+            extendTile(id);
         });
     });
     //Timeline event listener
@@ -261,8 +290,7 @@ document.addEventListener('DOMContentLoaded', () => {
             setTimeout(function() {
                 date.innerHTML = makeDateString(timeline_dates[id]["date"]);
                 date.classList.remove('timeline__date--out');
-            }, 200);
-            
+            }, 200);            
 
             document.querySelectorAll('.timeline__point').forEach(function(item) {
                 item.classList.remove('timeline__point--active');
@@ -282,16 +310,6 @@ document.addEventListener('DOMContentLoaded', () => {
         item.addEventListener("mouseleave", function() {
             var popup = document.querySelector('#popup_' + id);
             popup.classList.remove('timeline__popupDate--active');
-        });
-    });
-
-    //Observe and start animations
-    const observer_cv_buttons = new IntersectionObserver(entries => {
-        entries.forEach(entry => {
-
-            if (entry.isIntersecting) {
-                entry.target.classList.add('animation--right');
-            }
         });
     });
 })

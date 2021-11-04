@@ -1,0 +1,8 @@
+timeline:
+    notebook.jpg - https://unsplash.com/license (https://unsplash.com/photos/HyczMwZbdLg)
+
+skills:
+    
+
+hobbies:
+    calisthenics.jpg - (https://unsplash.com/photos/Gyz2AkmYHgg)
